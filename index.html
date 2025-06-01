@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talent Referral System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #f0f0f0;
+        }
+
+        .tab {
+            padding: 15px 30px;
+            background: none;
+            border: none;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            color: #4facfe;
+            border-bottom-color: #4facfe;
+        }
+
+        .tab:hover {
+            color: #4facfe;
+            background: rgba(79, 172, 254, 0.1);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #666;
+            border: 2px solid #e1e5e9;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .talent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .talent-card {
+            background: white;
+            border: 2px solid #e1e5e9;
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .talent-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .talent-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-color: #4facfe;
+        }
+
+        .talent-name {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .talent-info {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .talent-skills {
+            margin-bottom: 15px;
+        }
+
+        .skill-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin: 2px;
+            font-weight: 500;
+        }
+
+        .talent-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state img {
+            width: 120px;
+            opacity: 0.5;
+            margin-bottom: 20px;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .search-bar input {
+            padding-left: 45px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23666' viewBox='0 0 24 24'%3E%3Cpath d='M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/%3E%3C/svg%3E") no-repeat 15px center;
+            background-size: 20px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            padding: 5px;
+            border-radius: 50%;
+            transition: background 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .referral-form {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .talent-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                text-align: left;
+                border-bottom: 1px solid #e1e5e9;
+                border-right: none;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .sourcing-categories {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .sourcing-category {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            border-left: 5px solid #4facfe;
+        }
+
+        .sourcing-category h3 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.4em;
+        }
+
+        .sourcing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .sourcing-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .sourcing-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .sourcing-card h4 {
+            color: #4facfe;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .sourcing-card p {
+            margin-bottom: 8px;
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .sourcing-card ul {
+            margin: 10px 0;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .sourcing-card li {
+            margin-bottom: 5px;
+        }
+
+        .sourcing-tips {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .tip-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .tip-card h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .tip-card ul {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .tip-card li {
+            margin-bottom: 8px;
+        }
+
+        .sourcing-scripts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+        }
+
+        .script-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .script-card h4 {
+            color: #764ba2;
+            margin-bottom: 15px;
+        }
+
+        .script-content textarea {
+            min-height: 120px;
+            background: #f8f9fa;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: inherit;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        .tracker-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .tracker-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .savings-overview {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .savings-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+
+        .savings-card.highlight {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .savings-card h3 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .benefit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .benefit-icon {
+            font-size: 2em;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .benefit-content h4 {
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+
+        .benefit-content p {
+            opacity: 0.9;
+            font-size: 0.95em;
+        }
+
+        .savings-calculator {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .calculator-input {
+            margin-bottom: 20px;
+        }
+
+        .calculator-input label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .projection-results {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-left: 4px solid #4facfe;
+        }
+
+        .feature-card h4 {
+            color: #4facfe;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .feature-card ul {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .feature-card li {
+            margin-bottom: 8px;
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .example-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        .example-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .example-card.highlighted {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .example-card h4 {
+            margin-bottom: 10px;
+            color: #4facfe;
+        }
+
+        .example-card.highlighted h4 {
+            color: white;
+        }
+
+        .example-value {
+            font-size: 2em;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .example-card.highlighted .example-value {
+            color: white;
+        }
+
+        .example-card p {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .example-card.highlighted p {
+            color: rgba(255,255,255,0.9);
+        }
+
+        @media (max-width: 768px) {
+            .benefit-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .examples-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sourcing-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .sourcing-tips {
+                grid-template-columns: 1fr;
+            }
+            
+            .sourcing-scripts {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+                    <div class="header">
+            <h1>🎯 Talent Referral System</h1>
+            <p>Manage your talent network and provide life-changing financial benefits</p>
+        </div>
+
+        <div class="main-content">
+                            <div class="tabs">
+                <button class="tab active" onclick="showTab('dashboard')">📊 Dashboard</button>
+                <button class="tab" onclick="showTab('add-talent')">➕ Add Talent</button>
+                <button class="tab" onclick="showTab('talent-list')">👥 Talent Pool</button>
+                <button class="tab" onclick="showTab('savings-plan')">💰 Savings Plan</button>
+                <button class="tab" onclick="showTab('sourcing-guide')">🎯 Find Talents</button>
+            </div>
+
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalTalents">0</div>
+                        <div class="stat-label">Total Talents</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalReferrals">0</div>
+                        <div class="stat-label">Referrals Made</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="potentialEarnings">₱0</div>
+                        <div class="stat-label">Potential Earnings</div>
+                    </div>
+                </div>
+
+                <h3 style="margin-bottom: 20px;">Recent Talents</h3>
+                <div id="recentTalents"></div>
+            </div>
+
+            <!-- Add Talent Tab -->
+            <div id="add-talent" class="tab-content">
+                <h2 style="margin-bottom: 20px;">Add New Talent</h2>
+                <form id="talentForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">First Name *</label>
+                            <input type="text" id="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name *</label>
+                            <input type="text" id="lastName" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" id="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="position">Preferred Position</label>
+                            <select id="position">
+                                <option value="">Select Position</option>
+                                <option value="Customer Service Representative">Customer Service Representative</option>
+                                <option value="Accounts Payable Specialist">Accounts Payable Specialist</option>
+                                <option value="Technical Support">Technical Support</option>
+                                <option value="Sales Representative">Sales Representative</option>
+                                <option value="Data Entry Specialist">Data Entry Specialist</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="experience">Years of Experience</label>
+                            <select id="experience">
+                                <option value="">Select Experience</option>
+                                <option value="Entry Level">Entry Level (0-1 years)</option>
+                                <option value="Junior">Junior (1-3 years)</option>
+                                <option value="Mid-Level">Mid-Level (3-5 years)</option>
+                                <option value="Senior">Senior (5+ years)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="skills">Skills (comma-separated)</label>
+                        <input type="text" id="skills" placeholder="e.g., Customer Service, Communication, Computer Skills">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">Notes / Additional Information</label>
+                        <textarea id="notes" placeholder="Any additional notes about this talent..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="relationship">How do you know them?</label>
+                        <input type="text" id="relationship" placeholder="e.g., Former colleague, Friend, LinkedIn connection">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">💾 Save Talent</button>
+                </form>
+            </div>
+
+            <!-- Talent List Tab -->
+            <div id="talent-list" class="tab-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>Talent Pool</h2>
+                    <button class="btn btn-secondary" onclick="exportTalents()">📥 Export</button>
+                </div>
+                
+                <div class="search-bar">
+                    <input type="text" id="searchTalents" placeholder="Search talents by name, email, or skills...">
+                </div>
+
+                <div id="talentGrid" class="talent-grid"></div>
+            </div>
+
+            <!-- Savings Plan Tab -->
+            <div id="savings-plan" class="tab-content">
+                <h2 style="margin-bottom: 20px;">💰 ResultsCX Referral Savings Plan</h2>
+                <p style="margin-bottom: 30px; color: #666; font-size: 1.1em;">Exclusive financial benefit for successful hires through your referral program.</p>
+
+                <div class="savings-overview">
+                    <div class="savings-card highlight">
+                        <h3>🎉 Your Exclusive Referral Benefit</h3>
+                        <div class="benefit-grid">
+                            <div class="benefit-item">
+                                <div class="benefit-icon">💰</div>
+                                <div class="benefit-content">
+                                    <h4>₱2,000 Base Savings</h4>
+                                    <p>Automatically credited after 120 days of active employment</p>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-icon">📈</div>
+                                <div class="benefit-content">
+                                    <h4>2.5% Monthly Growth</h4>
+                                    <p>Your savings grow every month with projected 2.5% interest</p>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-icon">🔒</div>
+                                <div class="benefit-content">
+                                    <h4>2-Year Vesting</h4>
+                                    <p>Fully vested after 2 years (regardless of employment status)</p>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-icon">📊</div>
+                                <div class="benefit-content">
+                                    <h4>Monthly Reports</h4>
+                                    <p>Detailed account statements delivered via email</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                                            <div class="savings-calculator">
+                        <h3>💡 Savings Growth Calculator</h3>
+                        <div class="risk-warning">
+                            <p><strong>⚠️ IMPORTANT:</strong> This calculator shows <strong>PROJECTIONS ONLY</strong>. The 2.5% monthly return is <strong>NOT GUARANTEED</strong> and actual returns may be lower, higher, or negative.</p>
+                        </div>
+                        <div class="calculator-input">
+                            <label>Starting Amount: ₱2,000 (Base)</label>
+                            <label>Additional Monthly Contribution (Optional):</label>
+                            <input type="number" id="monthlyContribution" placeholder="0" min="0">
+                            <button class="btn btn-primary" onclick="calculateSavings()">Calculate Projections</button>
+                        </div>
+                        <div id="savingsProjection" class="projection-results"></div>
+                    </div>
+
+                    <div class="savings-features">
+                        <h3>📋 Plan Features & Benefits</h3>
+                        <div class="features-grid">
+                            <div class="feature-card">
+                                <h4>🎯 Eligibility</h4>
+                                <ul>
+                                    <li>Successfully hired through your referral</li>
+                                    <li>Complete 120 days of active employment</li>
+                                    <li>Indicated you as their referrer during application</li>
+                                </ul>
+                            </div>
+                            <div class="feature-card">
+                                <h4>💵 Account Management</h4>
+                                <ul>
+                                    <li>₱2,000 base amount (fully vested in 5 years)</li>
+                                    <li>Optional additional contributions allowed</li>
+                                    <li>Base + earnings locked until vesting</li>
+                                    <li>Additional contributions withdrawable anytime</li>
+                                </ul>
+                            </div>
+                            <div class="feature-card">
+                                <h4>📈 Growth & Fees</h4>
+                                <ul>
+                                    <li>Target: 2.5% monthly interest growth</li>
+                                    <li>Management fee: 1.5% monthly (only if account earns >5%)</li>
+                                    <li>Monthly performance statements via email</li>
+                                    <li>Transparent fee structure</li>
+                                </ul>
+                            </div>
+                            <div class="feature-card">
+                                <h4>🔐 Vesting & Withdrawal</h4>
+                                <ul>
+                                    <li>Base ₱2,000 + earnings: 2-year vesting period</li>
+                                    <li>Vesting starts after 120-day milestone</li>
+                                    <li>Additional contributions: immediate access</li>
+                                    <li>Vesting regardless of employment status</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="savings-examples">
+                        <h3>💰 Projected Account Values</h3>
+                        <div class="examples-grid">
+                            <div class="example-card">
+                                <h4>Year 1</h4>
+                                <div class="example-value">₱5,230</div>
+                                <p>Base + 34% growth (2.5% monthly)</p>
+                            </div>
+                            <div class="example-card highlighted">
+                                <h4>Year 2 (Vested)</h4>
+                                <div class="example-value">₱10,900</div>
+                                <p>Fully accessible amount</p>
+                            </div>
+                            <div class="example-card">
+                                <h4>Year 3 (Continued)</h4>
+                                <div class="example-value">₱22,700</div>
+                                <p>If continued beyond vesting</p>
+                            </div>
+                        </div>
+                        <p style="text-align: center; color: #666; font-size: 0.9em; margin-top: 15px;">
+                            *Projections based on 2.5% monthly growth target. <strong>NOT GUARANTEED.</strong> Actual returns may vary and can be lower, higher, or negative.
+                        </p>
+
+                        <div class="risk-disclaimer">
+                            <h4>⚠️ Important Risk Disclaimer</h4>
+                            <div class="disclaimer-content">
+                                <p><strong>INVESTMENT RISK NOTICE:</strong></p>
+                                <ul>
+                                    <li>The 2% monthly return is a <strong>PROJECTION ONLY</strong> and is <strong>NOT GUARANTEED</strong></li>
+                                    <li>Actual returns may be <strong>significantly lower, higher, or even NEGATIVE</strong></li>
+                                    <li>Your account value may <strong>decrease below the initial ₱2,000</strong> depending on market performance</li>
+                                    <li>Past performance does not guarantee future results</li>
+                                    <li>All investments carry risk of loss</li>
+                                    <li>Only the ₱2,000 base contribution is guaranteed - growth is subject to market conditions</li>
+                                    <li>You should not rely solely on projected returns for financial planning</li>
+                                </ul>
+                                <p style="margin-top: 15px;"><strong>By participating, you acknowledge and accept these investment risks.</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sourcing Guide Tab -->
+            <div id="sourcing-guide" class="tab-content">
+                <h2 style="margin-bottom: 20px;">🎯 Ultimate Talent Sourcing Guide</h2>
+                <p style="margin-bottom: 30px; color: #666; font-size: 1.1em;">Discover unlimited potential talents for your ResultsCX referrals using these proven sourcing strategies and platforms.</p>
+
+                <div class="sourcing-categories">
+                    <div class="sourcing-category">
+                        <h3>🌐 Major Philippine Job Boards</h3>
+                        <div class="sourcing-grid">
+                            <div class="sourcing-card">
+                                <h4>🔹 JobStreet Philippines</h4>
+                                <p><strong>Best for:</strong> All BPO and customer service roles</p>
+                                <p><strong>Why it works:</strong> Largest job board in PH with millions of candidates</p>
+                                <a href="https://ph.jobstreet.com" target="_blank" class="btn btn-primary">Visit JobStreet</a>
+                            </div>
+                            <div class="sourcing-card">
+                                <h4>🔹 Indeed Philippines</h4>
+                                <p><strong>Best for:</strong> Customer service representatives</p>
+                                <p><strong>Why it works:</strong> Global reach with strong local presence</p>
+                                <a href="https://ph.indeed.com" target="_blank" class="btn btn-primary">Visit Indeed</a>
+                            </div>
+                            <div class="sourcing-card">
+                                <h4>🔹 Kalibrr</h4>
+                                <p><strong>Best for:</strong> Fresh graduates and entry-level</p>
+                                <p><strong>Why it works:</strong> AI-powered matching for skill assessment</p>
+                                <a href="https://kalibrr.com" target="_blank" class="btn btn-primary">Visit Kalibrr</a>
+                            </div>
+                            <div class="sourcing-card">
+                                <h4>🔹 BossJob Philippines</h4>
+                                <p><strong>Best for:</strong> Direct employer connections</p>
+                                <p><strong>Why it works:</strong> Chat-to-hire feature for quick screening</p>
+                                <a href="https://bossjob.ph" target="_blank" class="btn btn-primary">Visit BossJob</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sourcing-category">
+                        <h3>🎓 University & College Networks</h3>
+                        <div class="sourcing-tips">
+                            <div class="tip-card">
+                                <h4>🏫 Top Universities for BPO Talent</h4>
+                                <ul>
+                                    <li><strong>University of the Philippines</strong> - Multiple campuses</li>
+                                    <li><strong>Ateneo de Manila University</strong> - Strong English proficiency</li>
+                                    <li><strong>De La Salle University</strong> - Business & communication programs</li>
+                                    <li><strong>Far Eastern University</strong> - Large alumni network</li>
+                                    <li><strong>University of Santo Tomas</strong> - Diverse program offerings</li>
+                                </ul>
+                                <p><strong>💡 Strategy:</strong> Connect with career centers, attend job fairs, partner with professors</p>
+                            </div>
+                            <div class="tip-card">
+                                <h4>📚 Best Degree Programs for Customer Service</h4>
+                                <ul>
+                                    <li>Communication Arts</li>
+                                    <li>Business Administration</li>
+                                    <li>Psychology</li>
+                                    <li>Information Technology</li>
+                                    <li>Nursing (career shifters)</li>
+                                    <li>Education (strong communication skills)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sourcing-category">
+                        <h3>💼 Professional Networks</h3>
+                        <div class="sourcing-grid">
+                            <div class="sourcing-card">
+                                <h4>🔹 LinkedIn Philippines</h4>
+                                <p><strong>Best for:</strong> Experienced professionals</p>
+                                <p><strong>Strategy:</strong> Search "Customer Service" + "Philippines" or specific cities</p>
+                                <a href="https://linkedin.com" target="_blank" class="btn btn-primary">Search LinkedIn</a>
+                            </div>
+                            <div class="sourcing-card">
+                                <h4>🔹 Facebook Groups</h4>
+                                <p><strong>Best groups:</strong></p>
+                                <ul style="font-size: 0.9em; margin: 10px 0;">
+                                    <li>"BPO Jobs Philippines"</li>
+                                    <li>"Call Center Jobs PH"</li>
+                                    <li>"Customer Service Jobs Manila"</li>
+                                </ul>
+                                <a href="https://facebook.com" target="_blank" class="btn btn-primary">Find Groups</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sourcing-category">
+                        <h3>🚀 Freelance & Remote Platforms</h3>
+                        <div class="sourcing-grid">
+                            <div class="sourcing-card">
+                                <h4>🔹 OnlineJobs.ph</h4>
+                                <p><strong>Best for:</strong> Virtual assistants & remote workers</p>
+                                <p><strong>Why it works:</strong> Philippines-focused, cost-effective talent</p>
+                                <a href="https://onlinejobs.ph" target="_blank" class="btn btn-primary">Browse Talent</a>
+                            </div>
+                            <div class="sourcing-card">
+                                <h4>🔹 Upwork Philippines</h4>
+                                <p><strong>Best for:</strong> Experienced freelancers ready for full-time</p>
+                                <p><strong>Strategy:</strong> Filter by Philippines location + customer service skills</p>
+                                <a href="https://upwork.com" target="_blank" class="btn btn-primary">Search Upwork</a>
+                            </div>
+                            <div class="sourcing-card">
+                                <h4>🔹 Freelancer.ph</h4>
+                                <p><strong>Best for:</strong> Project-based workers seeking stability</p>
+                                <p><strong>Why it works:</strong> Many ready to transition to full-time</p>
+                                <a href="https://freelancer.ph" target="_blank" class="btn btn-primary">Find Freelancers</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sourcing-category">
+                        <h3>🏢 Recruitment Agencies & Partners</h3>
+                        <div class="sourcing-grid">
+                            <div class="sourcing-card">
+                                <h4>🔹 Local Recruitment Agencies</h4>
+                                <p><strong>Top agencies in Metro Manila:</strong></p>
+                                <ul style="font-size: 0.9em;">
+                                    <li>KC Global Talent Solutions (BGC)</li>
+                                    <li>Manila Recruitment (Makati)</li>
+                                    <li>Abba Personnel Services (Mandaluyong)</li>
+                                </ul>
+                                <p><strong>💡 Tip:</strong> Many agencies offer referral programs</p>
+                            </div>
+                            <div class="sourcing-card">
+                                <h4>🔹 BPO Recruitment Specialists</h4>
+                                <p><strong>Companies that can help:</strong></p>
+                                <ul style="font-size: 0.9em;">
+                                    <li>Remote CoWorker (Taguig)</li>
+                                    <li>Virtual Coworker</li>
+                                    <li>Stealth Agents</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sourcing-category">
+                        <h3>🎯 Smart Sourcing Strategies</h3>
+                        <div class="sourcing-tips">
+                            <div class="tip-card">
+                                <h4>🔍 Where to Find Hidden Talent</h4>
+                                <ul>
+                                    <li><strong>Career shifters:</strong> Former nurses, teachers, OFWs returning home</li>
+                                    <li><strong>Students:</strong> Working students in communication/business programs</li>
+                                    <li><strong>Existing networks:</strong> Friends, family, former colleagues</li>
+                                    <li><strong>Social media:</strong> Instagram, TikTok creators with good communication</li>
+                                    <li><strong>Retail workers:</strong> Mall employees with customer service experience</li>
+                                    <li><strong>Restaurant staff:</strong> Servers, hosts with people skills</li>
+                                </ul>
+                            </div>
+                            <div class="tip-card">
+                                <h4>📱 Social Media Sourcing</h4>
+                                <ul>
+                                    <li><strong>Facebook:</strong> Join local job hunting groups by city</li>
+                                    <li><strong>Instagram:</strong> Search hashtags #JobHuntingPH #BPOJobs</li>
+                                    <li><strong>TikTok:</strong> Follow job posting accounts and career coaches</li>
+                                    <li><strong>Twitter:</strong> Follow @JobStreetPH @JobsPhilippines</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sourcing-category">
+                        <h3>🌟 Proven Sourcing Scripts & Templates</h3>
+                        <div class="sourcing-scripts">
+                            <div class="script-card">
+                                <h4>📞 Cold Outreach Script</h4>
+                                <div class="script-content">
+                                    <p><strong>For LinkedIn/Facebook:</strong></p>
+                                    <textarea readonly onclick="this.select()">Hi [Name]! I noticed your background in [field/experience]. I'm working with ResultsCX, a leading customer service company that's actively hiring. 
+
+Beyond their excellent benefits and career growth opportunities, I'm offering something special: a ₱2,000 savings plan with growth potential (targeting 2.5% monthly, though returns are not guaranteed and may vary). This becomes fully yours after just 2 years!
+
+This is my personal investment in your financial future. Would you be interested in learning more about this opportunity?
+
+*Investment disclaimer: Returns are projections only, not guaranteed, and may be negative.</textarea>
+                                </div>
+                            </div>
+                            <div class="script-card">
+                                <h4>📝 Job Post Template</h4>
+                                <div class="script-content">
+                                    <p><strong>For social media groups:</strong></p>
+                                    <textarea readonly onclick="this.select()">🚨 SPECIAL OPPORTUNITY: Customer Service Representatives at ResultsCX! 
+
+📍 Multiple locations: Manila, Pasig, Cainta, Lipa, Cebu
+💰 Competitive salary + excellent benefits
+🎁 EXCLUSIVE BONUS: ₱2,000 savings plan → ₱10,900+ in just 2 years!
+📋 Requirements: HS Graduate, good English, basic computer skills
+🎯 Perfect for: Fresh grads, career shifters, experienced CSRs
+
+This is more than a job - it's an investment in your financial future! The savings plan is my personal gift to successful hires who complete 120 days.
+
+Send me your resume if interested! 
+
+⚠️ Disclaimer: Investment returns are projections only, not guaranteed, and may vary.
+
+#JobHiringPH #CustomerService #BPOJobs #ResultsCX #SavingsPlan</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sourcing-category">
+                        <h3>📊 Sourcing Tracker</h3>
+                        <div class="tracker-section">
+                            <p>Keep track of your sourcing efforts:</p>
+                            <div class="tracker-buttons">
+                                <button class="btn btn-primary" onclick="addSourcingActivity()">📝 Log Sourcing Activity</button>
+                                <button class="btn btn-secondary" onclick="viewSourcingStats()">📈 View Stats</button>
+                            </div>
+                            <div id="sourcingStats" style="margin-top: 20px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Referral Modal -->
+    <div id="referralModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📤 Create Referral</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="referralContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Storage key
+        const STORAGE_KEY = 'talentReferralSystem';
+        const SOURCING_KEY = 'sourcingActivities';
+
+        // Data storage
+        let talents = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        let sourcingActivities = JSON.parse(localStorage.getItem(SOURCING_KEY) || '[]');
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDashboard();
+            renderTalentGrid();
+            
+            // Auto-calculate savings projection
+            setTimeout(() => {
+                if (document.getElementById('monthlyContribution')) {
+                    calculateSavings();
+                }
+            }, 500);
+            
+            // Form submission
+            document.getElementById('talentForm').addEventListener('submit', handleFormSubmit);
+            
+            // Search functionality
+            document.getElementById('searchTalents').addEventListener('input', handleSearch);
+        });
+
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+            
+            // If showing sourcing guide, update stats
+            if (tabName === 'sourcing-guide') {
+                updateSourcingStats();
+            }
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const talent = {
+                id: Date.now().toString(),
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                position: document.getElementById('position').value,
+                experience: document.getElementById('experience').value,
+                skills: document.getElementById('skills').value.split(',').map(s => s.trim()).filter(s => s),
+                notes: document.getElementById('notes').value,
+                relationship: document.getElementById('relationship').value,
+                dateAdded: new Date().toISOString(),
+                referralCount: 0
+            };
+
+            talents.push(talent);
+            saveTalents();
+            
+            // Reset form
+            e.target.reset();
+            
+            // Show success message
+            showSuccessMessage('Talent added successfully!');
+            
+            // Update dashboard and grid
+            updateDashboard();
+            renderTalentGrid();
+            
+            // Switch to talent list tab
+            showTab('talent-list');
+        }
+
+        function saveTalents() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(talents));
+        }
+
+        function updateDashboard() {
+            document.getElementById('totalTalents').textContent = talents.length;
+            document.getElementById('totalReferrals').textContent = 
+                talents.reduce((sum, talent) => sum + talent.referralCount, 0);
+            
+            // Calculate potential earnings (₱5,000 per successful referral)
+            const totalReferrals = talents.reduce((sum, talent) => sum + talent.referralCount, 0);
+            document.getElementById('potentialEarnings').textContent = `₱${(totalReferrals * 5000).toLocaleString()}`;
+            
+            // Show recent talents
+            const recentTalents = talents.slice(-3).reverse();
+            const recentContainer = document.getElementById('recentTalents');
+            
+            if (recentTalents.length === 0) {
+                recentContainer.innerHTML = '<div class="empty-state"><p>No talents added yet. Click "Add Talent" to get started!</p></div>';
+            } else {
+                recentContainer.innerHTML = recentTalents.map(talent => createTalentCard(talent)).join('');
+            }
+        }
+
+        function renderTalentGrid() {
+            const container = document.getElementById('talentGrid');
+            
+            if (talents.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <p style="font-size: 1.2em; margin-bottom: 10px;">No talents in your pool yet</p>
+                        <p>Start building your network by adding talented individuals you know!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = talents.map(talent => createTalentCard(talent)).join('');
+        }
+
+        function createTalentCard(talent) {
+            const skillTags = talent.skills.map(skill => 
+                `<span class="skill-tag">${skill}</span>`
+            ).join('');
+
+            return `
+                <div class="talent-card">
+                    <div class="talent-name">${talent.firstName} ${talent.lastName}</div>
+                    <div class="talent-info">
+                        📧 ${talent.email}<br>
+                        ${talent.phone ? `📱 ${talent.phone}<br>` : ''}
+                        ${talent.position ? `💼 ${talent.position}<br>` : ''}
+                        ${talent.experience ? `⭐ ${talent.experience}<br>` : ''}
+                        🤝 ${talent.relationship || 'No relationship specified'}
+                    </div>
+                    ${talent.skills.length > 0 ? `<div class="talent-skills">${skillTags}</div>` : ''}
+                    <div class="talent-actions">
+                        <button class="btn btn-primary" onclick="createReferral('${talent.id}')">
+                            📤 Refer (${talent.referralCount})
+                        </button>
+                        <button class="btn btn-secondary" onclick="editTalent('${talent.id}')">✏️ Edit</button>
+                        <button class="btn btn-danger" onclick="deleteTalent('${talent.id}')">🗑️ Delete</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createReferral(talentId) {
+            const talent = talents.find(t => t.id === talentId);
+            if (!talent) return;
+
+            // Increment referral count
+            talent.referralCount++;
+            saveTalents();
+            updateDashboard();
+            renderTalentGrid();
+
+            const referralContent = `
+                <div class="success-message">
+                    <strong>Referral Details Generated!</strong><br>
+                    Copy the information below to use in the ResultsCX referral form.
+                </div>
+                
+                <div class="referral-form">
+                    <h3 style="margin-bottom: 15px;">📋 Referral Information</h3>
+                    
+                    <div class="form-group">
+                        <label><strong>First Name:</strong></label>
+                        <input type="text" value="${talent.firstName}" readonly onclick="this.select()">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><strong>Last Name:</strong></label>
+                        <input type="text" value="${talent.lastName}" readonly onclick="this.select()">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><strong>Email Address:</strong></label>
+                        <input type="text" value="${talent.email}" readonly onclick="this.select()">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><strong>Message to Contact:</strong></label>
+                        <textarea readonly onclick="this.select()">Hi ${talent.firstName}! I found an incredible opportunity at ResultsCX that matches your background. They're looking for ${talent.position || 'talented individuals'} with your experience. 
+
+Beyond excellent benefits and career growth, I'm offering an exclusive financial benefit: If you're successfully hired and complete 120 days, you'll receive a ₱2,000 savings plan with potential to grow (targeting 2.5% monthly, though returns are not guaranteed and may vary). This becomes fully yours after just 2 years!
+
+This is my personal investment in your financial future. Would you be interested in learning more? Please apply using the same email address and mention my name as your referrer.
+
+*Note: Investment returns are projections only and not guaranteed. Actual returns may be lower, higher, or negative.</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><strong>How do you know them:</strong></label>
+                        <textarea readonly onclick="this.select()">${talent.relationship || 'Professional contact with relevant experience'}</textarea>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background: #e7f3ff; border-radius: 10px;">
+                        <p><strong>💡 Instructions:</strong></p>
+                        <ol style="margin-left: 20px; margin-top: 10px;">
+                            <li>Copy the information above</li>
+                            <li>Open the ResultsCX referral form</li>
+                            <li>Paste the details into the corresponding fields</li>
+                            <li>Submit the referral</li>
+                            <li>Remind ${talent.firstName} to apply with the same email address</li>
+                        </ol>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px; text-align: center;">
+                    <button class="btn btn-primary" onclick="copyReferralData('${talentId}')">📋 Copy All Data</button>
+                    <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+                </div>
+            `;
+
+            document.getElementById('referralContent').innerHTML = referralContent;
+            document.getElementById('referralModal').classList.add('active');
+        }
+
+        function copyReferralData(talentId) {
+            const talent = talents.find(t => t.id === talentId);
+            if (!talent) return;
+
+            const copyText = `
+REFERRAL DETAILS FOR RESULTSCX:
+
+First Name: ${talent.firstName}
+Last Name: ${talent.lastName}
+Email: ${talent.email}
+
+Message to Contact:
+Hi ${talent.firstName}! I found an incredible opportunity at ResultsCX that matches your background. They're looking for ${talent.position || 'talented individuals'} with your experience. 
+
+Beyond excellent benefits and career growth, I'm offering an exclusive financial benefit: If you're successfully hired and complete 120 days, you'll receive a ₱2,000 savings plan with potential to grow (targeting 2.5% monthly, though returns are not guaranteed and may vary). This becomes fully yours after just 2 years!
+
+This is my personal investment in your financial future. Would you be interested in learning more? Please apply using the same email address and mention my name as your referrer.
+
+*Note: Investment returns are projections only and not guaranteed. Actual returns may be lower, higher, or negative.
+
+How do you know them:
+${talent.relationship || 'Professional contact with relevant experience'}
+            `.trim();
+
+            navigator.clipboard.writeText(copyText).then(() => {
+                alert('Referral data copied to clipboard!');
+            });
+        }
+
+        function editTalent(talentId) {
+            const talent = talents.find(t => t.id === talentId);
+            if (!talent) return;
+
+            // Populate form with talent data
+            document.getElementById('firstName').value = talent.firstName;
+            document.getElementById('lastName').value = talent.lastName;
+            document.getElementById('email').value = talent.email;
+            document.getElementById('phone').value = talent.phone || '';
+            document.getElementById('position').value = talent.position || '';
+            document.getElementById('experience').value = talent.experience || '';
+            document.getElementById('skills').value = talent.skills.join(', ');
+            document.getElementById('notes').value = talent.notes || '';
+            document.getElementById('relationship').value = talent.relationship || '';
+
+            // Remove talent from array (will be re-added when form is submitted)
+            talents = talents.filter(t => t.id !== talentId);
+            saveTalents();
+
+            // Switch to add talent tab
+            showTab('add-talent');
+        }
+
+        function deleteTalent(talentId) {
+            if (confirm('Are you sure you want to delete this talent?')) {
+                talents = talents.filter(t => t.id !== talentId);
+                saveTalents();
+                updateDashboard();
+                renderTalentGrid();
+            }
+        }
+
+        function handleSearch() {
+            const searchTerm = document.getElementById('searchTalents').value.toLowerCase();
+            const container = document.getElementById('talentGrid');
+            
+            const filteredTalents = talents.filter(talent => 
+                talent.firstName.toLowerCase().includes(searchTerm) ||
+                talent.lastName.toLowerCase().includes(searchTerm) ||
+                talent.email.toLowerCase().includes(searchTerm) ||
+                talent.skills.some(skill => skill.toLowerCase().includes(searchTerm)) ||
+                (talent.position && talent.position.toLowerCase().includes(searchTerm))
+            );
+
+            if (filteredTalents.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>No talents found matching your search.</p></div>';
+            } else {
+                container.innerHTML = filteredTalents.map(talent => createTalentCard(talent)).join('');
+            }
+        }
+
+        function exportTalents() {
+            const csvContent = [
+                ['First Name', 'Last Name', 'Email', 'Phone', 'Position', 'Experience', 'Skills', 'Relationship', 'Referrals', 'Date Added'],
+                ...talents.map(talent => [
+                    talent.firstName,
+                    talent.lastName,
+                    talent.email,
+                    talent.phone || '',
+                    talent.position || '',
+                    talent.experience || '',
+                    talent.skills.join('; '),
+                    talent.relationship || '',
+                    talent.referralCount,
+                    new Date(talent.dateAdded).toLocaleDateString()
+                ])
+            ].map(row => row.map(field => `"${field}"`).join(',')).join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `talent_pool_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function closeModal() {
+            document.getElementById('referralModal').classList.remove('active');
+        }
+
+        function showSuccessMessage(message) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-message';
+            successDiv.innerHTML = `<strong>Success!</strong> ${message}`;
+            
+            const container = document.querySelector('.main-content');
+            container.insertBefore(successDiv, container.firstChild);
+            
+            setTimeout(() => {
+                successDiv.remove();
+            }, 3000);
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('referralModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Sourcing tracking functions
+        function addSourcingActivity() {
+            const platform = prompt('Which platform did you use? (e.g., JobStreet, LinkedIn, Facebook)');
+            if (!platform) return;
+            
+            const contacts = prompt('How many people did you contact?');
+            if (!contacts || isNaN(contacts)) return;
+            
+            const activity = {
+                id: Date.now().toString(),
+                platform: platform,
+                contacts: parseInt(contacts),
+                date: new Date().toISOString().split('T')[0]
+            };
+            
+            sourcingActivities.push(activity);
+            localStorage.setItem(SOURCING_KEY, JSON.stringify(sourcingActivities));
+            updateSourcingStats();
+            showSuccessMessage(`Added sourcing activity: ${contacts} contacts from ${platform}`);
+        }
+
+        function updateSourcingStats() {
+            const container = document.getElementById('sourcingStats');
+            if (!container) return;
+            
+            const totalContacts = sourcingActivities.reduce((sum, activity) => sum + activity.contacts, 0);
+            const platformStats = {};
+            
+            sourcingActivities.forEach(activity => {
+                platformStats[activity.platform] = (platformStats[activity.platform] || 0) + activity.contacts;
+            });
+            
+            container.innerHTML = `
+                <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <h4 style="color: #4facfe; margin-bottom: 15px;">📊 Your Sourcing Statistics</h4>
+                    <p><strong>Total Contacts Made:</strong> ${totalContacts}</p>
+                    <p><strong>Platforms Used:</strong> ${Object.keys(platformStats).length}</p>
+                    ${Object.keys(platformStats).length > 0 ? `
+                        <div style="margin-top: 15px;">
+                            <strong>Platform Breakdown:</strong>
+                            ${Object.entries(platformStats).map(([platform, count]) => 
+                                `<div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                                    <span>${platform}:</span> <span>${count} contacts</span>
+                                </div>`
+                            ).join('')}
+                        </div>
+                    ` : '<p style="color: #666; margin-top: 10px;">Start logging your sourcing activities to see stats here!</p>'}
+                </div>
+            `;
+        }
+
+        function viewSourcingStats() {
+            updateSourcingStats();
+            const container = document.getElementById('sourcingStats');
+            container.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Savings calculator function
+        function calculateSavings() {
+            const monthlyContribution = parseFloat(document.getElementById('monthlyContribution').value) || 0;
+            const baseAmount = 2000;
+            const monthlyInterestRate = 0.025; // 2.5% per month
+            const managementFeeRate = 0.015; // 1.5% monthly management fee
+            const managementFeeThreshold = 0.05; // Only charge fee if earning > 5%
+            
+            const projectionContainer = document.getElementById('savingsProjection');
+            let results = '<h4 style="margin-bottom: 15px;">📊 Projected Account Growth</h4>';
+            
+            let currentBalance = baseAmount;
+            let totalContributions = monthlyContribution;
+            
+            const milestones = [12, 24, 36]; // Show 1-2 years (vesting) + 3rd year for reference
+            
+            results += '<div class="projection-table">';
+            results += '<div class="projection-header"><span>Year</span><span>Base + Interest</span><span>Your Contributions</span><span>Total Balance</span></div>';
+            
+            milestones.forEach(months => {
+                // Calculate base amount growth
+                let baseGrowth = baseAmount * Math.pow(1 + monthlyInterestRate, months);
+                
+                // Calculate contributions growth (each contribution grows from when it was added)
+                let contributionsGrowth = 0;
+                for (let i = 1; i <= months; i++) {
+                    contributionsGrowth += monthlyContribution * Math.pow(1 + monthlyInterestRate, months - i);
+                }
+                
+                // Apply management fees if applicable
+                let totalBeforeFees = baseGrowth + contributionsGrowth;
+                let initialValue = baseAmount + (monthlyContribution * months);
+                let earnedAmount = totalBeforeFees - initialValue;
+                let managementFees = 0;
+                
+                if (earnedAmount / initialValue > managementFeeThreshold) {
+                    managementFees = totalBeforeFees * managementFeeRate * months;
+                }
+                
+                let finalBalance = totalBeforeFees - managementFees;
+                let year = months / 12;
+                
+                results += `
+                    <div class="projection-row">
+                        <span>${year} year${year > 1 ? 's' : ''}</span>
+                        <span>₱${Math.round(baseGrowth).toLocaleString()}</span>
+                        <span>₱${Math.round(contributionsGrowth).toLocaleString()}</span>
+                        <span class="total-balance">₱${Math.round(finalBalance).toLocaleString()}</span>
+                    </div>
+                `;
+            });
+            
+            results += '</div>';
+            
+            // Add vesting note
+            results += '<div class="vesting-note">';
+            results += '<p><strong>📝 Important Notes:</strong></p>';
+            results += '<ul>';
+            results += '<li>Base ₱2,000 + earnings fully vested after 2 years</li>';
+            results += '<li>Your additional contributions are always accessible</li>';
+            results += '<li>Management fee (1.5% monthly) only applies when account earns >5% of current value</li>';
+            results += '<li><strong>⚠️ RISK DISCLAIMER:</strong> Projections are NOT GUARANTEED. Actual returns may be lower, higher, or negative</li>';
+            results += '<li>Account value may decrease below initial ₱2,000 depending on performance</li>';
+            results += '</ul>';
+            results += '</div>';
+            
+            projectionContainer.innerHTML = results;
+        }
+
+        // Auto-calculate on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDashboard();
+            renderTalentGrid();
+            
+            // Auto-calculate savings projection
+            setTimeout(() => {
+                if (document.getElementById('monthlyContribution')) {
+                    calculateSavings();
+                }
+            }, 500);
+            
+            // Form submission
+            document.getElementById('talentForm').addEventListener('submit', handleFormSubmit);
+            
+            // Search functionality
+            document.getElementById('searchTalents').addEventListener('input', handleSearch);
+        });
+
+        // Add CSS for projection table
+        const additionalCSS = `
+        .projection-table {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 1px;
+            background: #e1e5e9;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .projection-header {
+            display: contents;
+            font-weight: 600;
+            background: #4facfe;
+            color: white;
+        }
+        
+        .projection-header span {
+            background: #4facfe;
+            padding: 12px;
+            text-align: center;
+        }
+        
+        .projection-row {
+            display: contents;
+        }
+        
+        .projection-row span {
+            background: white;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        .total-balance {
+            font-weight: 600;
+            color: #4facfe;
+        }
+        
+        .vesting-note {
+            background: #e7f3ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .vesting-note ul {
+            margin-left: 20px;
+            color: #666;
+        }
+        
+        .vesting-note li {
+            margin-bottom: 5px;
+        }
+
+        .risk-disclaimer {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .risk-disclaimer h4 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .disclaimer-content {
+            color: #856404;
+            font-size: 0.95em;
+        }
+
+        .disclaimer-content ul {
+            margin: 10px 0 10px 20px;
+        }
+
+        .disclaimer-content li {
+            margin-bottom: 8px;
+        }
+
+        .disclaimer-content strong {
+            font-weight: 700;
+        }
+
+        .risk-warning {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #721c24;
+        }
+
+        .risk-warning p {
+            margin: 0;
+            font-size: 0.95em;
+        }
+        `;
+        
+        // Inject additional CSS
+        const style = document.createElement('style');
+        style.textContent = additionalCSS;
+        document.head.appendChild(style);
+
+        // Auto-calculate on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDashboard();
+            renderTalentGrid();
+            
+            // Auto-calculate savings projection
+            setTimeout(() => {
+                if (document.getElementById('monthlyContribution')) {
+                    calculateSavings();
+                }
+            }, 500);
+            
+            // Form submission
+            document.getElementById('talentForm').addEventListener('submit', handleFormSubmit);
+            
+            // Search functionality
+            document.getElementById('searchTalents').addEventListener('input', handleSearch);
+        });
+    </script>
+</body>
+</html>
